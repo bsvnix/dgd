@@ -1,0 +1,9 @@
+# Control center configuration
+*control_center_config: &control_center_config
+  build:
+    context: .
+    dockerfile: Dockerfile  # Use the Dockerfile in the current directory
+  ports:
+    - "5000:5000"
+  depends_on:
+    - db
