@@ -1,11 +1,10 @@
-services:
-  db:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
+*db_config: &db_config  # Define the anchor
+  build:
+    context: .
+    dockerfile: Dockerfile
+  environment:
+    - POSTGRES_USER=${DB_USER}
+    - POSTGRES_PASSWORD=${DB_PASSWORD}
+    - POSTGRES_DB=${DB_NAME}
+  ports:
+    - "${DB_PORT}:${DB_PORT}"
