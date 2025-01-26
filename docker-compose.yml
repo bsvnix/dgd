@@ -6,11 +6,13 @@ services:
       context: ./control_center
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "5000:5000"  # Expose Flask app on port 5000
+    volumes:
+      - ./control_center:/app  # Mount the control_center folder
+    env_file:
+      - .env  # Use environment variables from the .env file
     depends_on:
       - db
-    env_file:
-      - .env
     networks:
       - dgd_network
 
@@ -18,30 +20,22 @@ services:
     build:
       context: ./db
       dockerfile: Dockerfile
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - db_data:/var/lib/postgresql/data  # Ensure database data persists
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql  # Initialize the database
     env_file:
-      - .env
+      - .env  # Use environment variables for DB credentials
+    ports:
+      - "5432:5432"  # Expose the database port
     networks:
       - dgd_network
 
-  vulnerability_scanner:
-    build:
-      context: ./vulnerability_scanner
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    networks:
-      - host_network
-      - dgd_network
+
 
 networks:
   dgd_network:
-    # This network will be created automatically
-  host_network:
-    external: true
-    name: host
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
