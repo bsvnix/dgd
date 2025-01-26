@@ -11,4 +11,9 @@ services:
     env_file:
       - ./.env  # Load the centralized env file
 
-  # ... other services
+  vulnerability_scanner:
+    <<: *vulnerability_scanner_config
+
+networks:
+  dgd_network:
+    # This network will be created automatically
