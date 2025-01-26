@@ -5,32 +5,28 @@ source ./.env
 
 # --- Functions ---
 
-# Function to check and install packages
+# Function to check and install required packages
 function install_packages() {
+  local required_packages=("curl" "docker.io" "docker-compose")
   local not_installed=()
-  for package in "${REQUIRED_PACKAGES[@]}"; do
+  for package in "${required_packages[@]}"; do
     if ! dpkg -s "$package" &> /dev/null; then
       not_installed+=("$package")
     fi
   done
 
   if [[ ${#not_installed[@]} -gt 0 ]]; then
-    echo "Installing packages: ${not_installed[*]}"
+    echo "Installing missing packages: ${not_installed[*]}"
     sudo apt-get update && sudo apt-get install -y "${not_installed[@]}"
   else
     echo "All required packages are already installed."
   fi
 }
 
-# Function to check if a command exists
-function command_exists() {
-  command -v "$1" &> /dev/null
-}
-
-# Function to install Docker (optimized)
+# Function to check if Docker is installed
 function install_docker() {
-  if ! command_exists docker; then
-    echo "Installing Docker..."
+  if ! command -v docker &> /dev/null; then
+    echo "Docker is not installed. Installing Docker..."
     curl -fsSL https://get.docker.com -o get-docker.sh
     sudo sh get-docker.sh
     rm get-docker.sh
@@ -39,10 +35,10 @@ function install_docker() {
   fi
 }
 
-# Function to install Docker Compose (optimized)
+# Function to check if Docker Compose is installed
 function install_docker_compose() {
-  if ! command_exists docker-compose; then
-    echo "Installing Docker Compose..."
+  if ! command -v docker-compose &> /dev/null; then
+    echo "Docker Compose is not installed. Installing Docker Compose..."
     sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
   else
@@ -50,24 +46,30 @@ function install_docker_compose() {
   fi
 }
 
-# Function to deploy containers (with docker-compose.yml in subfolders)
-function deploy_containers() {
-  echo "Deploying containers..."
-  sudo docker-compose up -d
+# Function to force rebuild and deploy containers
+function rebuild_containers() {
+  echo "Stopping and removing existing containers..."
+  sudo docker-compose down --volumes --remove-orphans
+
+  echo "Pruning unused Docker resources..."
+  sudo docker system prune -a --volumes -f
+
+  echo "Rebuilding and deploying containers..."
+  sudo docker-compose up --build -d
 }
 
 # --- Main Script ---
 
-# Check and install required packages
+# Step 1: Check and install required packages
 install_packages
 
-# Check and install Docker
+# Step 2: Install Docker if not installed
 install_docker
 
-# Check and install Docker Compose
+# Step 3: Install Docker Compose if not installed
 install_docker_compose
 
-# Deploy containers
-deploy_containers
+# Step 4: Rebuild and deploy containers
+rebuild_containers
 
 echo "Deployment complete!"
