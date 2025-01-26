@@ -4,7 +4,7 @@ FROM python:3.9-alpine
 RUN pip install Flask
 
 # Copy Python code
-COPY dgd-app.py /app
+COPY app.py /app
 
 # Set working directory
 WORKDIR /app
