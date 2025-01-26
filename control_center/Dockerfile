@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 ENV LANG=C.UTF-8
 
 # Install system dependencies required by Python libraries
-RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev openssl-dev libxml2-dev libxslt-dev libsqlite3-dev
+RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev openssl-dev libxml2-dev libxslt-dev sqlite-dev
 
 # Set the working directory inside the container
 WORKDIR /app
