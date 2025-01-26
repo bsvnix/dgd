@@ -2,20 +2,46 @@ version: "3.9"
 
 services:
   control_center:
-    <<: *control_center_config
+    build:
+      context: ./control_center
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
     env_file:
       - .env
+    networks:
+      - dgd_network
 
   db:
-    <<: *db_config
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
     env_file:
       - .env
+    networks:
+      - dgd_network
 
   vulnerability_scanner:
-    <<: *vulnerability_scanner_config
+    build:
+      context: ./vulnerability_scanner
+      dockerfile: Dockerfile
     env_file:
       - .env
+    networks:
+      - host_network
+      - dgd_network
 
 networks:
   dgd_network:
     # This network will be created automatically
+  host_network:
+    external: true
+    name: host
