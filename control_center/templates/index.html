@@ -17,8 +17,8 @@
         <tbody>
             {% for result in scan_results %}
             <tr>
-                <td>{{ result.ip }}</td>
-                <td>{{ result.open_ports }}</td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -27,7 +27,7 @@
     <h2>Decoy Events</h2>
     <ul>
         {% for event in decoy_events %}
-        <li>{{ event.decoy_name }} - Port {{ event.port }} received connection from IP {{ event.attacker_ip }}</li>
+        <li>{{ event[1] }} - Port {{ event[2] }} received connection from IP {{ event[3] }}</li>
         {% endfor %}
     </ul>
 </body>
