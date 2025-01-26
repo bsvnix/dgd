@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 ENV LANG=C.UTF-8
 
 # Install system dependencies required by Python libraries
-RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev
+RUN apk add --no-cache gcc musl-dev python3-dev libffi-dev openssl-dev libxml2-dev libxslt-dev libsqlite3-dev
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -21,4 +21,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Command to start the Flask application
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
