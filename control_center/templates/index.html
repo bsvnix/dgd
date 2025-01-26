@@ -1,34 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Digital Ghost Defender</title>
+    <title>DGD Dashboard</title>
 </head>
 <body>
-    <h1>Digital Ghost Defender</h1>
+    <h1>DGD Dashboard</h1>
 
-    <h2>Network Scan Results</h2>
-    <table>
+    <h2>Scan Results</h2>
+    <table border="1">
         <thead>
             <tr>
-                <th>IP Address</th>
+                <th>ID</th>
+                <th>IP</th>
                 <th>Open Ports</th>
             </tr>
         </thead>
         <tbody>
             {% for result in scan_results %}
             <tr>
-                <td>{{ result[1] }}</td>
-                <td>{{ result[2] }}</td>
+                <td>{{ result.id }}</td>
+                <td>{{ result.ip }}</td>
+                <td>{{ result.open_ports }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
     <h2>Decoy Events</h2>
-    <ul>
-        {% for event in decoy_events %}
-        <li>{{ event[1] }} - Port {{ event[2] }} received connection from IP {{ event[3] }}</li>
-        {% endfor %}
-    </ul>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Decoy Name</th>
+                <th>Port</th>
+                <th>Attacker IP</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in decoy_events %}
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ event.decoy_name }}</td>
+                <td>{{ event.port }}</td>
+                <td>{{ event.attacker_ip }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
