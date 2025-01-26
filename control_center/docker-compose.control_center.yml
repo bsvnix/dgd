@@ -1,5 +1,4 @@
-# Control center configuration
-*control_center_config: &control_center_config  # Define the anchor
+*control_center_config: &control_center_config
   build:
     context: .
     dockerfile: Dockerfile
