@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  control_center:
+    <<: *control_center_config
+    env_file:
+      - ./.env  # Load the centralized env file
+
+  db:
+    <<: *db_config
+    env_file:
+      - ./.env  # Load the centralized env file
+
+  # ... other services
