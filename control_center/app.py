@@ -4,8 +4,6 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-
-# Enable CORS for all routes
 CORS(app)
 
 # Database file path
@@ -46,7 +44,7 @@ def init_db():
                 db.commit()
                 app.logger.info("Database initialized successfully.")
         except Exception as e:
-            app.logger.error(f"Error initializing database: {e}")
+            app.logger.error(f"Error initializing the database: {e}")
     else:
         app.logger.info("Database already exists. Initialization skipped.")
 
@@ -54,22 +52,32 @@ def init_db():
 @app.route('/')
 def index():
     """Render the main page with scan results and decoy events."""
+    scan_results = []
+    decoy_events = []
+    error_message = None
+
     try:
         db = get_db()
-        if db is None:
-            return "Database connection failed. Please check the logs.", 500
-
-        # Fetch scan results and decoy events
-        scan_results = db.execute('SELECT * FROM scan_results').fetchall()
-        decoy_events = db.execute('SELECT * FROM decoy_events').fetchall()
-
-        return render_template('index.html', scan_results=scan_results, decoy_events=decoy_events)
+        if db:
+            # Try fetching data from the database
+            scan_results = db.execute('SELECT * FROM scan_results').fetchall()
+            decoy_events = db.execute('SELECT * FROM decoy_events').fetchall()
+        else:
+            error_message = "Database connection is unavailable."
     except sqlite3.Error as e:
+        error_message = "An error occurred while fetching data from the database."
         app.logger.error(f"Database query failed: {e}")
-        return "Internal Server Error", 500
     except Exception as e:
-        app.logger.error(f"Unexpected error in index route: {e}")
-        return "Internal Server Error", 500
+        error_message = "An unexpected error occurred."
+        app.logger.error(f"Unexpected error: {e}")
+
+    # Render the page with the data and error message
+    return render_template(
+        'index.html',
+        scan_results=scan_results,
+        decoy_events=decoy_events,
+        error_message=error_message
+    )
 
 
 @app.route('/api/scan_results', methods=['POST'])
