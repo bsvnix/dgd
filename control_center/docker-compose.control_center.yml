@@ -1,9 +1,15 @@
 # Control center configuration
-*control_center_config: &control_center_config
+*control_center_config: &control_center_config  # Define the anchor
   build:
     context: .
-    dockerfile: Dockerfile  # Use the Dockerfile in the current directory
+    dockerfile: Dockerfile
   ports:
     - "5000:5000"
   depends_on:
     - db
+  networks:
+    - dgd_network
+
+networks:
+  dgd_network:
+    # This network will be created automatically
