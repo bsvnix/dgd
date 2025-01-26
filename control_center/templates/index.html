@@ -6,6 +6,10 @@
 <body>
     <h1>DGD Dashboard</h1>
 
+    {% if error_message %}
+    <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
     <h2>Scan Results</h2>
     <table border="1">
         <thead>
@@ -18,9 +22,9 @@
         <tbody>
             {% for result in scan_results %}
             <tr>
-                <td>{{ result.id }}</td>
-                <td>{{ result.ip }}</td>
-                <td>{{ result.open_ports }}</td>
+                <td>{{ result['id'] }}</td>
+                <td>{{ result['ip'] }}</td>
+                <td>{{ result['open_ports'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -39,10 +43,10 @@
         <tbody>
             {% for event in decoy_events %}
             <tr>
-                <td>{{ event.id }}</td>
-                <td>{{ event.decoy_name }}</td>
-                <td>{{ event.port }}</td>
-                <td>{{ event.attacker_ip }}</td>
+                <td>{{ event['id'] }}</td>
+                <td>{{ event['decoy_name'] }}</td>
+                <td>{{ event['port'] }}</td>
+                <td>{{ event['attacker_ip'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
